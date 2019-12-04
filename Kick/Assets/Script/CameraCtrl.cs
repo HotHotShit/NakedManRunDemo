@@ -21,16 +21,16 @@ public class CameraCtrl: MonoBehaviour
     void LateUpdate()
     {
         
-        if (PlayerInstance.Inst.Player == null) return;
+        if (PlayerFrame.Player == null) return;
 
-        Transform targetTransform = PlayerInstance.Inst.Player.transform;
+        Transform targetTransform = PlayerFrame.Player.transform;
         
         targetPosition = targetTransform.position - targetTransform.forward * distanceAway + targetTransform.up * distanceUp;
         transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * smooth);
         
 
        
-        transform.LookAt(PlayerInstance.Inst.Player.transform);
+        transform.LookAt(PlayerFrame.Player.transform);
 
     }
 }

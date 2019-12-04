@@ -72,8 +72,8 @@ public class MatchVSResponseInner : MatchvsResponse
     private void registerUserResponseInner(MsUser userInfo) {
         Debug.Log("registerUserResponseInner");
         Debug.Log(userInfo);
-        PlayerInstance.Inst.UserID = userInfo.userid;
-        PlayerInstance.Inst.Token = userInfo.token;
+        PlayerFrame.gUserID = userInfo.userid;
+        PlayerFrame.Token = userInfo.token;
         engine.login(userInfo.userid, userInfo.token);
     }
     /**
@@ -113,22 +113,18 @@ public class MatchVSResponseInner : MatchvsResponse
         Debug.Log("joinRoomResponseInner :" + status);
         if (status == 200)
         {
-            if (engine.setFrameSync(20, false, 0) == 0)
+            if (roomInfo.Owner == PlayerFrame.gUserID)
             {
-                Debug.Log(" players count:" + roomUserInfoList.Count);
-                roomUserInfoList.ForEach(game.addPlayer);
-                game.addPlayer(new PlayerInfo() { UserID = PlayerInstance.Inst.UserID });
-                //if (game.getPlayerCount() >= 2)
-                //{
-                //    engine.joinOver();
-                //}
+                engine.setFrameSync(20, true, 0);
+            }
 
-            }
-            else
+            Debug.Log(" players count:" + roomUserInfoList.Count);
+            roomUserInfoList.ForEach(game.addPlayer);
+            game.addPlayer(new PlayerInfo() { UserID = PlayerFrame.gUserID });
+            if (game.getPlayerCount() >= 2)
             {
-                Debug.LogError(" set Frame Sync faild !");
+                engine.joinOver();
             }
-            
         } else
         {
             Debug.LogError(" join room failed! ");
@@ -164,7 +160,8 @@ public class MatchVSResponseInner : MatchvsResponse
         Debug.Log(" joinOverResponseInner ");
         if (rsp.Status == ErrorCode.Ok)
         {
-            PlayerInstance.Inst.isStart = true;
+            PlayerFrame.isStart = true;
+
 
         } else
         {
@@ -178,6 +175,8 @@ public class MatchVSResponseInner : MatchvsResponse
      */
     private  void joinOverNotifyInner(JoinOverNotify notifyInfo)
     {
+        Debug.Log(" ------------------ joinOverNotifyInner ----------------------");
+        PlayerFrame.isStart = true;
     }
     /**
      * message LeaveRoomRsp
@@ -309,7 +308,7 @@ public class MatchVSResponseInner : MatchvsResponse
      */
     private  void setFrameSyncNotifyInner(SetFrameSyncRateNotify notify)
     {
-        //Debug.Log(" setFrameSyncNotifyInner: " + notify);
+        Debug.Log(" setFrameSyncNotifyInner: " + notify);
     }
     /**
      *
@@ -318,7 +317,7 @@ public class MatchVSResponseInner : MatchvsResponse
     private  void sendFrameEventResponseInner(FrameBroadcastAck rsp)
     {
 
-        //Debug.Log(" sendFrameEventResponseInner: " + rsp);
+        Debug.Log(" sendFrameEventResponseInner: " + (System.DateTime.Now.Ticks - PlayerFrame.FrameTime)/1000000);
     }
     /**
      *
@@ -328,9 +327,12 @@ public class MatchVSResponseInner : MatchvsResponse
     {
         if (data.frameItems.Length > 0)
         {
-            Debug.Log(" frameUpdateInner -------------------: "+ data.frameItems.Length);
 
-            Debug.Log(data.frameItems.GetValue(0));
+            for (int i = 0; i < data.frameItems.Length; i++)
+            {
+                FrameDataNotify notify = (FrameDataNotify)(data.frameItems.GetValue(i));
+                game.pushPlayerFrame(notify);
+            }
         }
     }
     /**

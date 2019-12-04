@@ -50,6 +50,8 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 95
       Script: {instanceID: 0}
+    - Class: 102
+      Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
     - Class: 108
@@ -63,6 +65,8 @@ ScriptsOnlyBuild:
     - Class: 115
       Script: {instanceID: 0}
     - Class: 124
+      Script: {instanceID: 0}
+    - Class: 128
       Script: {instanceID: 0}
     - Class: 137
       Script: {instanceID: 0}
@@ -687,7 +691,7 @@ ScriptsOnlyBuild:
     className: Outline
   - hash:
       serializedVersion: 2
-      Hash: d0a5bf2a1a440eb69becdc7a43f63c81
+      Hash: 0b4bca9b939fb187b4c18aae3601261f
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: PlayerControl
@@ -772,4 +776,4 @@ ScriptsOnlyBuild:
   platform: 5
   scenePathNames:
   - Assets/Scenes/home.unity
-  playerPath: E:/Code/Unity/Kick/Kick/Build/Kick.exe
+  playerPath: E:/Code/Unity/NakedMan/NakedManRunDemo/Kick/Build/Kick.exe

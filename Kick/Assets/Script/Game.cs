@@ -7,6 +7,8 @@ public class Game : UnityContext
 {
 
     public GameObject players;
+    
+    private List<PlayerControl> playerCtrlList = new List<PlayerControl>();
     // Start is called before the first frame update
     void Start()
     {
@@ -17,6 +19,26 @@ public class Game : UnityContext
         
     }
 
+    public void pushPlayerFrame(FrameDataNotify notify)
+    {
+       
+        playerCtrlList.ForEach((PlayerControl ctrl)=>{
+            if (ctrl != null && notify != null && notify.SrcUid == ctrl.getUserID())
+            {
+                ctrl.playerFrame.decodeFrameData(notify.CpProto);
+            }
+        });
+    }
+
+    public void clearPlayerFrame()
+    {
+        playerCtrlList.ForEach((PlayerControl ctrl) => {
+            if (ctrl != null)
+            {
+                ctrl.playerFrame.clear();
+            }
+        });
+    }
 
     public void addPlayer(PlayerInfo playerInfo)
     {
@@ -27,8 +49,10 @@ public class Game : UnityContext
         GameObject player = Instantiate(playerObj) as GameObject;
         player.transform.parent = players.transform;
         player.transform.localPosition = Vector3.zero;
+        player.transform.localPosition += new Vector3(getPlayerCount() * 2, 0, 0);
         PlayerControl ctrl = player.GetComponent<PlayerControl>();
         ctrl.bindUser(playerInfo.UserID);
+        playerCtrlList.Add(ctrl);
        
     }
 
@@ -39,11 +63,7 @@ public class Game : UnityContext
     // Update is called once per frame
     void Update()
     {
-        if (PlayerInstance.Inst.isStart)
-        {
-            
-            
-        }
+       
     }
 
    
